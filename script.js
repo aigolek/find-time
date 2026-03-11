@@ -110,6 +110,15 @@ function resetAvailability() {
     document.getElementById("result").innerText = "";
     alert("All votes have been cleared!");
 }
+const now = new Date();
 
+// Your local time
+const localTime = now.toLocaleString([], {hour: '2-digit', minute:'2-digit', weekday:'short', month:'short', day:'numeric'});
+
+// Mountain Time (auto DST)
+const mtTime = now.toLocaleString([], {hour: '2-digit', minute:'2-digit', weekday:'short', month:'short', day:'numeric', timeZone: 'America/Denver'});
+
+document.getElementById("time-info").innerText = 
+    `Your local time: ${localTime} | Mountain Time (MT): ${mtTime}`;
 // Initialize calendar
 generateCalendar();

@@ -67,3 +67,14 @@ button:hover.save {
 button:hover.grey {
     background-color: #bbb;
 }
+
+.time-box {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #4CAF50; /* green */
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
