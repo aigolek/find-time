@@ -1,6 +1,7 @@
 const startHour = 8;
 const endHour = 23;
 const days = 7;
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx6X_bo7P_8V9nhnLCkOpirwq-KUhqEl5ROJj1eqFh_xxAGXoPGGL3MEaKWRmblQPcp7Q/exec';
 
 let data = JSON.parse(localStorage.getItem("availability") || "{}");
 
@@ -47,23 +48,74 @@ function toggle(id){
     cell.classList.toggle("selected");
 }
 
-function submitAvailability(){
+// function submitAvailability(){
+//     const name = document.getElementById("username").value;
+//     if(!name){
+//         alert("Enter name");
+//         return;
+//     }
+
+//     document.querySelectorAll(".slot.selected").forEach(cell=>{
+//         if(!data[cell.id]) data[cell.id] = [];
+//         if(!data[cell.id].includes(name)) data[cell.id].push(name);
+//     });
+
+//     localStorage.setItem("availability", JSON.stringify(data));
+//     refreshNames();
+//     alert("Saved!");
+// }
+async function submitAvailability() {
     const name = document.getElementById("username").value;
-    if(!name){
-        alert("Enter name");
+    if (!name) {
+        alert("Please enter your name!");
         return;
     }
 
-    document.querySelectorAll(".slot.selected").forEach(cell=>{
-        if(!data[cell.id]) data[cell.id] = [];
-        if(!data[cell.id].includes(name)) data[cell.id].push(name);
+    const selectedSlots = [];
+    document.querySelectorAll(".slot.selected").forEach(cell => {
+        selectedSlots.push(cell.id);
     });
 
-    localStorage.setItem("availability", JSON.stringify(data));
-    refreshNames();
-    alert("Saved!");
-}
+    if (selectedSlots.length === 0) {
+        alert("Please select at least one time slot.");
+        return;
+    }
 
+    // Show a loading state
+    const saveBtn = document.querySelector(".save");
+    saveBtn.innerText = "Saving...";
+    saveBtn.disabled = true;
+
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Essential for Google Script
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                slots: selectedSlots
+            })
+        });
+
+        // Update local UI for immediate feedback
+        selectedSlots.forEach(id => {
+            if (!data[id]) data[id] = [];
+            if (!data[id].includes(name)) data[id].push(name);
+        });
+        
+        localStorage.setItem("availability", JSON.stringify(data));
+        refreshNames();
+        
+        alert("Availability saved to Google Sheets!");
+    } catch (error) {
+        console.error('Error!', error.message);
+        alert("Something went wrong saving to the cloud.");
+    } finally {
+        saveBtn.innerText = "Save Availability";
+        saveBtn.disabled = false;
+    }
+}
 function refreshNames(){
     for(const slot in data){
         const el = document.getElementById("names_"+slot);
