@@ -3,7 +3,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIsH8DgwLw5L
 const startHour = 8;
 const endHour = 23;
 const days = 7;
-const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const weekdays = ["Monday!", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 // Global data object to store name lists
 let data = {};
@@ -153,32 +153,48 @@ async function submitAvailability() {
 
 /**
  * 6. FIND BEST TIME
- * Highlights slots with the most people
+ * Highlights the slots with the absolute maximum number of votes.
  */
 function findBest() {
+    console.log("Finding the most popular time slots...");
+    
     let bestCount = 0;
     let bestSlots = [];
 
-    // Reset previous "best" highlights
+    // 1. Reset previous "best" highlights
     document.querySelectorAll(".best").forEach(c => c.classList.remove("best"));
 
-    for (const slot in data) {
-        const count = data[slot].length;
+    // 2. Find the maximum number of votes currently in the data
+    for (const slotId in data) {
+        const count = data[slotId].length;
         if (count > bestCount) {
             bestCount = count;
-            bestSlots = [slot];
-        } else if (count === bestCount && count > 0) {
-            bestSlots.push(slot);
         }
     }
 
+    // 3. Collect all slots that have that maximum count
+    // (We only do this if bestCount > 0 so we don't highlight everything when empty)
+    if (bestCount > 0) {
+        for (const slotId in data) {
+            if (data[slotId].length === bestCount) {
+                bestSlots.push(slotId);
+            }
+        }
+    }
+
+    // 4. Highlight them in the UI
     bestSlots.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.add("best");
     });
 
-    document.getElementById("result").innerText = 
-        bestCount > 0 ? `Best slot has ${bestCount} people` : "No votes yet.";
+    // 5. Update the result text
+    const resultEl = document.getElementById("result");
+    if (bestCount > 0) {
+        resultEl.innerText = `Best slot(s) found with ${bestCount} people!`;
+    } else {
+        resultEl.innerText = "No votes yet. Click some slots and save!";
+    }
 }
 
 /**
