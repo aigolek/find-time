@@ -1,5 +1,5 @@
 // CONFIGURATION
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzIsH8DgwLw5Lgg2tcr_W33ArMlMnoIg8R-Ac5SWkc2bU3EwczSJuqxahccG6LOlA9N/exec'
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSQbwN_H4FofOzbR7C67xmrWAortoVNXh32sdM-yao_GIHZ50upHQnUAgP7wCnU6rZ/exec'
 const startHour = 8;
 const endHour = 23;
 const days = 7;
@@ -249,10 +249,10 @@ function doGet(e) {
 // --- INITIALIZE PAGE ---
 const now = new Date();
 const localTime = now.toLocaleString([], {hour: '2-digit', minute:'2-digit', weekday:'short', month:'short', day:'numeric'});
-const mtTime = now.toLocaleString([], {hour: '2-digit', minute:'2-digit', weekday:'short', month:'short', day:'numeric', timeZone: 'America/Denver'});
+const mtTime = now.toLocaleString([], {hour: '2-digit', minute:'2-digit', weekday:'short', month:'short', day:'numeric', timeZone: 'Asia/Almaty'});
 
 document.getElementById("time-info").innerText = 
-    `Your local time: ${localTime} | Mountain Time (MT): ${mtTime}`;
+    `Your local time: ${localTime} | Almaty Time (MT): ${mtTime}`;
 
 // 1. Build the table
 generateCalendar();
