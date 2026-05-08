@@ -78,3 +78,56 @@ button:hover.grey {
     margin-bottom: 10px;
     font-size: 16px;
 }
+
+/* Responsive Container */
+.calendar-container {
+    width: 100%;
+    overflow-x: auto; /* Allows side-to-side swiping on mobile */
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Forces equal column widths */
+}
+
+/* Mobile Specific Adjustments */
+@media screen and (max-width: 600px) {
+    th, td {
+        padding: 4px 2px;
+        font-size: 11px; /* Smaller text for mobile */
+    }
+
+    .slot {
+        height: 50px; /* Taller slots for easier tapping */
+    }
+
+    .names {
+        font-size: 9px;
+        line-height: 1;
+    }
+
+    /* Shorten weekdays for mobile if needed */
+    th:nth-child(2):after { content: "M"; }
+    th:nth-child(3):after { content: "T"; }
+    th:nth-child(4):after { content: "W"; }
+    th:nth-child(5):after { content: "T"; }
+    th:nth-child(6):after { content: "F"; }
+    th:nth-child(7):after { content: "S"; }
+    th:nth-child(8):after { content: "S"; }
+    
+    /* Hide the full weekday names on small screens */
+    th span {
+        display: none;
+    }
+}
+.slot {
+    cursor: pointer;
+    user-select: none; /* Prevents text highlighting while tapping */
+    touch-action: manipulation; /* Optimizes for mobile tapping */
+}
+
+.slot:active {
+    background-color: #e0e0e0; /* Visual feedback when touched */
+}

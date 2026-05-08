@@ -18,10 +18,10 @@ function generateCalendar() {
     console.log("1. Generating Calendar...");
     const table = document.getElementById("calendar");
     
-    // Header Row
-    let header = "<tr><th>Time (AT)</th>";
+    let header = "<tr><th>Time</th>";
     for (let d = 0; d < 7; d++) {
-        header += `<th>${weekdays[d]}</th>`;
+        // Wrap name in span so we can hide it on mobile via CSS
+        header += `<th><span>${weekdays[d]}</span></th>`;
     }
     header += "</tr>";
     table.innerHTML = header;
