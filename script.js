@@ -26,11 +26,19 @@ function generateCalendar() {
     header += "</tr>";
     table.innerHTML = header;
 
-    // Time Rows
-    for (let h = startHour; h <= endHour; h++) {
-        let row = `<tr><td>${h}:00</td>`;
+    // Time Rows (Step by 0.5 for 30-minute increments)
+    for (let h = startHour; h < endHour; h += 0.5) {
+        // Format the display time (e.g., 8.5 becomes 8:30)
+        const hour = Math.floor(h);
+        const minutes = (h % 1 === 0) ? "00" : "30";
+        const timeLabel = `${hour}:${minutes}`;
+        
+        // Create a safe ID for the cell (e.g., "0_8-00" or "0_8-30")
+        const idSuffix = `${hour}-${minutes}`;
+        
+        let row = `<tr><td>${timeLabel}</td>`;
         for (let d = 0; d < days; d++) {
-            const id = `${d}_${h}`;
+            const id = `${d}_${idSuffix}`;
             row += `
             <td class="slot" id="${id}" onclick="toggle('${id}')">
                 <div class="names" id="names_${id}"></div>
