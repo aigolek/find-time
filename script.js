@@ -3,7 +3,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHSSmo_D8XC9
 const days = 7;
 const weekdays = ["Monday!", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const startHour = 8; // Start hour for the calendar
-const endHour = 18;
+const endHour = 23;
 // Global data object to store name lists
 let data = {};
 
