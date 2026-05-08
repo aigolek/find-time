@@ -1,12 +1,14 @@
 // CONFIGURATION
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSQbwN_H4FofOzbR7C67xmrWAortoVNXh32sdM-yao_GIHZ50upHQnUAgP7wCnU6rZ/exec'
-const startHour = 8;
-const endHour = 23;
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHSSmo_D8XC9P1Imu_mR-u03lTKFp84WKqXREZln2uxtW8DZTys7OKprgTyP2_sHme/exec'
 const days = 7;
 const weekdays = ["Monday!", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
+const startHour = 8; // Start hour for the calendar
+const endHour = 18;
 // Global data object to store name lists
 let data = {};
+
+// Debugging: Log the Google Script URL being used
+console.log("Using Google Script URL:", GOOGLE_SCRIPT_URL);
 
 /**
  * 1. GENERATE CALENDAR
@@ -53,19 +55,17 @@ function toggle(id) {
  * Fetches the current list of names from Google Sheets
  */
 async function loadCloudData() {
-    console.log("2. Attempting to fetch from Google...");
     try {
-        const response = await fetch(GOOGLE_SCRIPT_URL);
+        // We don't use 'no-cors' for GET because we actually want to read the JSON data
+        const response = await fetch(GOOGLE_SCRIPT_URL); 
+        
         if (!response.ok) throw new Error('Network response was not ok');
         
         const cloudData = await response.json();
-        console.log("3. Data received from Google:", cloudData);
-        
         data = cloudData;
         refreshNames();
     } catch (e) {
         console.error("Fetch Error:", e);
-        // Fallback: If Google fails, try to show what's in local memory
         const local = localStorage.getItem("availability");
         if(local) {
             data = JSON.parse(local);
@@ -79,11 +79,13 @@ async function loadCloudData() {
  * Updates the text inside the calendar cells
  */
 function refreshNames() {
+    console.log("Refreshing names in the calendar..."); // Debugging
     // Clear all existing name displays
     document.querySelectorAll(".names").forEach(div => div.innerText = "");
     
     // Loop through the data object (keys are Slot IDs)
     for (const slotId in data) {
+        console.log("Updating slot:", slotId, "with names:", data[slotId]); // Debugging
         const el = document.getElementById("names_" + slotId);
         if (el) {
             // Join the array of names into a string
@@ -98,8 +100,10 @@ function refreshNames() {
  */
 async function submitAvailability() {
     const name = document.getElementById("username").value.trim();
+    console.log("User name:", name); // Debugging
     const selectedElements = document.querySelectorAll(".slot.selected");
     const selectedSlots = Array.from(selectedElements).map(el => el.id);
+    console.log("Selected slots:", selectedSlots); // Debugging
 
     if (!name) {
         alert("Please enter your name!");
@@ -116,7 +120,7 @@ async function submitAvailability() {
     btn.disabled = true;
 
     try {
-        console.log("Sending to Google:", { name, slots: selectedSlots });
+        console.log("Sending data to Google:", { name, slots: selectedSlots }); // Debugging
 
         // POST data to Google
         await fetch(GOOGLE_SCRIPT_URL, {
@@ -134,6 +138,7 @@ async function submitAvailability() {
 
         // Wait a moment for Google to finish the write operation, then refresh
         setTimeout(async () => {
+            console.log("Refreshing data after submission..."); // Debugging
             await loadCloudData(); 
             btn.innerText = originalText;
             btn.disabled = false;
@@ -144,7 +149,7 @@ async function submitAvailability() {
         }, 1500);
 
     } catch (e) {
-        console.error("Submission Error:", e);
+        console.error("Submission Error:", e); // Debugging
         alert("Error saving data.");
         btn.disabled = false;
         btn.innerText = originalText;
