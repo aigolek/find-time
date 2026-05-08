@@ -1,7 +1,7 @@
 // CONFIGURATION
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHSSmo_D8XC9P1Imu_mR-u03lTKFp84WKqXREZln2uxtW8DZTys7OKprgTyP2_sHme/exec'
 const days = 7;
-const weekdays = ["Monday!", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const startHour = 8; // Start hour for the calendar
 const endHour = 23;
 // Global data object to store name lists
@@ -19,7 +19,7 @@ function generateCalendar() {
     const table = document.getElementById("calendar");
     
     // Header Row
-    let header = "<tr><th>Time (MT)</th>";
+    let header = "<tr><th>Time (AT)</th>";
     for (let d = 0; d < 7; d++) {
         header += `<th>${weekdays[d]}</th>`;
     }
